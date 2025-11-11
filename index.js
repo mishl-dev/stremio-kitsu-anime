@@ -4,69 +4,124 @@ const landingTemplate = require('stremio-addon-sdk/src/landingTemplate');
 const addonInterface = require('./addon');
 
 const router = getRouter(addonInterface);
+const app = new Elysia();
 
-// Middleware to add CORS headers
-const addCorsHeaders = (res) => {
-  res.setHeader('access-control-allow-origin', '*');
-  res.setHeader('access-control-allow-methods', 'GET, POST, OPTIONS');
-  res.setHeader('access-control-allow-headers', 'Content-Type');
+// CORS headers
+const corsHeaders = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET, POST, OPTIONS',
+  'access-control-allow-headers': 'Content-Type'
 };
 
 router.get('/', (_, res) => {
   const landingHTML = landingTemplate(addonInterface.manifest);
   res.setHeader('content-type', 'text/html');
-  addCorsHeaders(res);
   res.end(landingHTML);
 });
 
-// Create middleware function that wraps the router with CORS
-const middleware = (req, res) => {
-  addCorsHeaders(res);
-  
-  // Handle OPTIONS requests
-  if (req.method === 'OPTIONS') {
-    res.statusCode = 204;
-    res.end();
-    return;
-  }
-  
-  router(req, res, () => {
-    res.statusCode = 404;
-    res.end();
-  });
-};
-
-const app = new Elysia();
-
-// Convert Node.js middleware to Elysia
-app.all('/*', ({ request, set }) => {
+// Create a proper Node.js-like request/response adapter
+const handleRequest = (method, pathname, headers, body) => {
   return new Promise((resolve) => {
+    let resolved = false;
+    
     const req = {
-      method: request.method,
-      url: new URL(request.url).pathname,
-      headers: Object.fromEntries(request.headers)
+      method,
+      url: pathname,
+      headers,
+      on: () => {} // Stub for stream methods
     };
 
-    let responded = false;
+    let statusCode = 200;
+    let responseHeaders = { ...corsHeaders };
+    let responseBody = '';
 
     const res = {
-      statusCode: 200,
-      headers: {},
-      setHeader: (key, value) => {
-        res.headers[key] = value;
+      statusCode,
+      statusMessage: 'OK',
+      headersSent: false,
+      headers: responseHeaders,
+      
+      setHeader: (name, value) => {
+        responseHeaders[name.toLowerCase()] = value;
         return res;
       },
-      end: (data = '') => {
-        if (responded) return;
-        responded = true;
-        resolve(new Response(data, {
-          status: res.statusCode,
-          headers: res.headers
-        }));
+      
+      getHeader: (name) => responseHeaders[name.toLowerCase()],
+      
+      removeHeader: (name) => {
+        delete responseHeaders[name.toLowerCase()];
+        return res;
+      },
+      
+      writeHead: (code, headersObj) => {
+        statusCode = code;
+        if (headersObj) {
+          Object.entries(headersObj).forEach(([k, v]) => {
+            responseHeaders[k.toLowerCase()] = v;
+          });
+        }
+        res.statusCode = code;
+        res.headersSent = true;
+        return res;
+      },
+      
+      write: (chunk) => {
+        if (chunk) {
+          responseBody += typeof chunk === 'string' ? chunk : chunk.toString();
+        }
+        return res;
+      },
+      
+      end: (chunk) => {
+        if (resolved) return;
+        resolved = true;
+        
+        if (chunk) {
+          responseBody += typeof chunk === 'string' ? chunk : chunk.toString();
+        }
+        
+        resolve({
+          status: statusCode,
+          headers: responseHeaders,
+          body: responseBody
+        });
       }
     };
 
-    middleware(req, res);
+    // Call the router with Node.js-like req/res objects
+    router(req, res, () => {
+      if (!resolved) {
+        resolved = true;
+        resolve({
+          status: 404,
+          headers: corsHeaders,
+          body: 'Not Found'
+        });
+      }
+    });
+  });
+};
+
+// Elysia route handler
+app.all('/*', async ({ request }) => {
+  const url = new URL(request.url);
+  const pathname = url.pathname + url.search;
+  const method = request.method;
+  const headers = Object.fromEntries(request.headers);
+  
+  // Handle CORS preflight
+  if (method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: corsHeaders
+    });
+  }
+
+  const { status, headers: resHeaders, body } = await handleRequest(method, pathname, headers);
+
+  return new Response(body || null, {
+    status,
+    headers: resHeaders
   });
 });
 
