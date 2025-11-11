@@ -9,6 +9,7 @@ services:
       - MONGO_URI=mongodb://mongo:27017/kitsu-anime
       - CACHE_ENABLED=true
       - NODE_ENV=production
+      - FANART_APIKEY=${FANART_APIKEY}
     depends_on:
       - mongo
   mongo:

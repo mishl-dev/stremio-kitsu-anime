@@ -15,6 +15,7 @@ Metadata for a specific anime can be retrieved via url `/meta/series/kitsu:{kits
 #### General
 
  - CACHE_MAX_AGE
+ - FANART_APIKEY - API key for fanart.tv
 
 #### Cache
 
