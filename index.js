@@ -6,6 +6,13 @@ const addonInterface = require('./addon');
 const router = getRouter(addonInterface);
 const app = new Elysia();
 
+// Manifest route
+app.get('/manifest.json', () => {
+  return new Response(JSON.stringify(addonInterface.manifest), {
+    headers: { 'content-type': 'application/json' }
+  });
+});
+
 // Landing page route
 app.get('/', () => {
   const landingHTML = landingTemplate(addonInterface.manifest);
