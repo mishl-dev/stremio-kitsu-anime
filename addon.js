@@ -139,4 +139,7 @@ async function getImdbIdMetadata(id) {
       .then((meta) => ({ meta: meta, cacheMaxAge: CACHE_MAX_AGE })));
 }
 
-module.exports = builder.getInterface();
+module.exports = {
+  manifest: manifest,
+  ...builder.getInterface()
+};
