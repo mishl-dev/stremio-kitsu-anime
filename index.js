@@ -6,10 +6,28 @@ const addonInterface = require('./addon');
 const router = getRouter(addonInterface);
 const app = new Elysia();
 
+// CORS middleware
+const corsHeaders = {
+  'access-control-allow-origin': '*',
+  'access-control-allow-methods': 'GET, POST, OPTIONS',
+  'access-control-allow-headers': 'Content-Type'
+};
+
+// Handle OPTIONS requests for CORS preflight
+app.options('/*', () => {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders
+  });
+});
+
 // Manifest route
 app.get('/manifest.json', () => {
   return new Response(JSON.stringify(addonInterface.manifest), {
-    headers: { 'content-type': 'application/json' }
+    headers: { 
+      'content-type': 'application/json',
+      ...corsHeaders
+    }
   });
 });
 
@@ -32,7 +50,7 @@ app.all('/*', ({ request }) => {
 
     const res = {
       statusCode: 200,
-      headers: {},
+      headers: { ...corsHeaders },
       setHeader: (key, value) => { res.headers[key] = value; },
       end: (data) => {
         resolve(new Response(data, {
@@ -43,7 +61,7 @@ app.all('/*', ({ request }) => {
     };
 
     router(req, res, () => {
-      resolve(new Response('Not Found', { status: 404 }));
+      resolve(new Response('Not Found', { status: 404, headers: corsHeaders }));
     });
   });
 });
