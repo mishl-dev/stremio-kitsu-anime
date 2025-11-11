@@ -4,46 +4,42 @@ const landingTemplate = require('stremio-addon-sdk/src/landingTemplate');
 const addonInterface = require('./addon');
 
 const router = getRouter(addonInterface);
-const app = new Elysia();
 
-// CORS middleware
-const corsHeaders = {
-  'access-control-allow-origin': '*',
-  'access-control-allow-methods': 'GET, POST, OPTIONS',
-  'access-control-allow-headers': 'Content-Type'
+// Middleware to add CORS headers
+const addCorsHeaders = (res) => {
+  res.setHeader('access-control-allow-origin', '*');
+  res.setHeader('access-control-allow-methods', 'GET, POST, OPTIONS');
+  res.setHeader('access-control-allow-headers', 'Content-Type');
 };
 
-// Handle OPTIONS requests for CORS preflight
-app.options('/*', () => {
-  return new Response(null, {
-    status: 204,
-    headers: corsHeaders
-  });
-});
-
-// Manifest route
-app.get('/manifest.json', () => {
-  return new Response(JSON.stringify(addonInterface.manifest), {
-    headers: { 
-      'content-type': 'application/json',
-      ...corsHeaders
-    }
-  });
-});
-
-// Landing page route
-app.get('/', () => {
+router.get('/', (_, res) => {
   const landingHTML = landingTemplate(addonInterface.manifest);
-  return new Response(landingHTML, {
-    headers: { 
-      'content-type': 'text/html',
-      ...corsHeaders
-    }
-  });
+  res.setHeader('content-type', 'text/html');
+  addCorsHeaders(res);
+  res.end(landingHTML);
 });
 
-// Proxy router requests through Elysia
-app.all('/*', ({ request }) => {
+// Create middleware function that wraps the router with CORS
+const middleware = (req, res) => {
+  addCorsHeaders(res);
+  
+  // Handle OPTIONS requests
+  if (req.method === 'OPTIONS') {
+    res.statusCode = 204;
+    res.end();
+    return;
+  }
+  
+  router(req, res, () => {
+    res.statusCode = 404;
+    res.end();
+  });
+};
+
+const app = new Elysia();
+
+// Convert Node.js middleware to Elysia
+app.all('/*', ({ request, set }) => {
   return new Promise((resolve) => {
     const req = {
       method: request.method,
@@ -52,74 +48,25 @@ app.all('/*', ({ request }) => {
     };
 
     let responded = false;
-    let body = '';
 
     const res = {
       statusCode: 200,
-      headers: { ...corsHeaders },
-      setHeader: (key, value) => { 
-        res.headers[key] = value; 
+      headers: {},
+      setHeader: (key, value) => {
+        res.headers[key] = value;
         return res;
       },
-      writeHead: (statusCode, headers) => {
-        res.statusCode = statusCode;
-        if (headers) {
-          Object.assign(res.headers, headers);
-        }
-        return res;
-      },
-      write: (chunk) => {
-        if (typeof chunk === 'string') {
-          body += chunk;
-        } else if (Buffer.isBuffer(chunk)) {
-          body += chunk.toString();
-        }
-        return res;
-      },
-      redirect: (statusCode, location) => {
-        if (typeof statusCode === 'string') {
-          location = statusCode;
-          statusCode = 302;
-        }
-        res.statusCode = statusCode;
-        res.setHeader('location', location);
-        res.setHeader('content-length', '0');
-        if (!responded) {
-          responded = true;
-          resolve(new Response(null, {
-            status: statusCode,
-            headers: res.headers
-          }));
-        }
-      },
-      end: (data) => {
+      end: (data = '') => {
         if (responded) return;
         responded = true;
-        
-        if (data) {
-          body += typeof data === 'string' ? data : data.toString();
-        }
-        
-        // Ensure content-type is set for JSON responses if not already set
-        if (!res.headers['content-type'] && body) {
-          try {
-            JSON.parse(body);
-            res.headers['content-type'] = 'application/json';
-          } catch (e) {
-            // Not JSON, leave as is
-          }
-        }
-        resolve(new Response(body, {
+        resolve(new Response(data, {
           status: res.statusCode,
           headers: res.headers
         }));
       }
     };
 
-    router(req, res, () => {
-      if (responded) return;
-      resolve(new Response('Not Found', { status: 404, headers: corsHeaders }));
-    });
+    middleware(req, res);
   });
 });
 
