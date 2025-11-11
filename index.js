@@ -51,21 +51,65 @@ app.all('/*', ({ request }) => {
       headers: Object.fromEntries(request.headers)
     };
 
+    let responded = false;
+    let body = '';
+
     const res = {
       statusCode: 200,
       headers: { ...corsHeaders },
-      setHeader: (key, value) => { res.headers[key] = value; },
+      setHeader: (key, value) => { 
+        res.headers[key] = value; 
+        return res;
+      },
+      writeHead: (statusCode, headers) => {
+        res.statusCode = statusCode;
+        if (headers) {
+          Object.assign(res.headers, headers);
+        }
+        return res;
+      },
+      write: (chunk) => {
+        if (typeof chunk === 'string') {
+          body += chunk;
+        } else if (Buffer.isBuffer(chunk)) {
+          body += chunk.toString();
+        }
+        return res;
+      },
+      redirect: (statusCode, location) => {
+        if (typeof statusCode === 'string') {
+          location = statusCode;
+          statusCode = 302;
+        }
+        res.statusCode = statusCode;
+        res.setHeader('location', location);
+        res.setHeader('content-length', '0');
+        if (!responded) {
+          responded = true;
+          resolve(new Response(null, {
+            status: statusCode,
+            headers: res.headers
+          }));
+        }
+      },
       end: (data) => {
+        if (responded) return;
+        responded = true;
+        
+        if (data) {
+          body += typeof data === 'string' ? data : data.toString();
+        }
+        
         // Ensure content-type is set for JSON responses if not already set
-        if (!res.headers['content-type'] && data) {
+        if (!res.headers['content-type'] && body) {
           try {
-            JSON.parse(data);
+            JSON.parse(body);
             res.headers['content-type'] = 'application/json';
           } catch (e) {
             // Not JSON, leave as is
           }
         }
-        resolve(new Response(data, {
+        resolve(new Response(body, {
           status: res.statusCode,
           headers: res.headers
         }));
@@ -73,6 +117,7 @@ app.all('/*', ({ request }) => {
     };
 
     router(req, res, () => {
+      if (responded) return;
       resolve(new Response('Not Found', { status: 404, headers: corsHeaders }));
     });
   });
