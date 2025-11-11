@@ -1,46 +1,46 @@
-import { Elysia } from 'elysia'
-import { getRouter } from 'stremio-addon-sdk'
-import landingTemplate from 'stremio-addon-sdk/src/landingTemplate.js'
-import addonInterface from './addon.js'
+const { Elysia } = require('elysia');
+const { getRouter } = require('stremio-addon-sdk');
+const landingTemplate = require('stremio-addon-sdk/src/landingTemplate');
+const addonInterface = require('./addon');
 
-const router = getRouter(addonInterface)
+const router = getRouter(addonInterface);
+const app = new Elysia();
 
-const app = new Elysia()
-
-// Landing page for browser access
+// Landing page route
 app.get('/', () => {
-  return new Response(landingTemplate(addonInterface.manifest), {
+  const landingHTML = landingTemplate(addonInterface.manifest);
+  return new Response(landingHTML, {
     headers: { 'content-type': 'text/html' }
-  })
-})
+  });
+});
 
-// Use Elysia's `all` route handler to pass all other requests to Stremio router
-app.all('/*', async ({ request }) => {
-  const { url, method, headers } = request
-  const [path] = url.split('?')
+// Proxy router requests through Elysia
+app.all('/*', ({ request }) => {
+  return new Promise((resolve) => {
+    const req = {
+      method: request.method,
+      url: new URL(request.url).pathname,
+      headers: Object.fromEntries(request.headers)
+    };
 
-  return await new Promise((resolve) => {
-    const fakeRes = {
+    const res = {
       statusCode: 200,
       headers: {},
-      setHeader: (k, v) => (fakeRes.headers[k] = v),
-      end: (body) => {
-        resolve(new Response(body, { status: fakeRes.statusCode, headers: fakeRes.headers }))
+      setHeader: (key, value) => { res.headers[key] = value; },
+      end: (data) => {
+        resolve(new Response(data, {
+          status: res.statusCode,
+          headers: res.headers
+        }));
       }
-    }
+    };
 
-    const fakeReq = Object.assign(request, {
-      url: path,
-      method,
-      headers: Object.fromEntries(headers.entries())
-    })
+    router(req, res, () => {
+      resolve(new Response('Not Found', { status: 404 }));
+    });
+  });
+});
 
-    router(fakeReq, fakeRes, () => {
-      fakeRes.statusCode = 404
-      fakeRes.end('Not found')
-    })
-  })
-})
-
-app.listen(process.env.PORT || 7000)
-console.log(`Started addon at: http://localhost:${process.env.PORT || 7000}`)
+app.listen(process.env.PORT || 7000, () => {
+  console.log(`Started addon at: http://localhost:${process.env.PORT || 7000}`);
+});
