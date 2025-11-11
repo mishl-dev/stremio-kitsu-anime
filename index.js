@@ -35,7 +35,10 @@ app.get('/manifest.json', () => {
 app.get('/', () => {
   const landingHTML = landingTemplate(addonInterface.manifest);
   return new Response(landingHTML, {
-    headers: { 'content-type': 'text/html' }
+    headers: { 
+      'content-type': 'text/html',
+      ...corsHeaders
+    }
   });
 });
 
@@ -53,6 +56,15 @@ app.all('/*', ({ request }) => {
       headers: { ...corsHeaders },
       setHeader: (key, value) => { res.headers[key] = value; },
       end: (data) => {
+        // Ensure content-type is set for JSON responses if not already set
+        if (!res.headers['content-type'] && data) {
+          try {
+            JSON.parse(data);
+            res.headers['content-type'] = 'application/json';
+          } catch (e) {
+            // Not JSON, leave as is
+          }
+        }
         resolve(new Response(data, {
           status: res.statusCode,
           headers: res.headers
