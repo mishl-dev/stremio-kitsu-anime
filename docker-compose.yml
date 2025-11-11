@@ -6,3 +6,15 @@ services:
       - "7000:7000"
     environment:
       - PORT=7000
+      - MONGO_URI=mongodb://mongo:27017/kitsu-anime
+      - CACHE_ENABLED=true
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
