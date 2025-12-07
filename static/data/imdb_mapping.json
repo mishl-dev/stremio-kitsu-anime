@@ -6178,6 +6178,13 @@
     "fromSeason": 1,
     "fromEpisode": 1
   },
+  "2717": {
+    "malId": "63013",
+    "malTitle": "Atashin'chi Next 2nd Season",
+    "kitsuId": "2717",
+    "kitsuTitle": "Atashin'chi",
+    "animeType": "TV"
+  },
   "2719": {
     "imdb_id": "tt0856156",
     "title": "Yatterman",
@@ -10404,6 +10411,16 @@
   "7032": {
     "imdb_id": "tt3513820",
     "title": "Meloetta's Moonlight Serenade"
+  },
+  "7042": {
+    "malId": "62921",
+    "malTitle": "Kegareboshi",
+    "kitsuId": "7042",
+    "kitsuTitle": "Nagareboshi Lens",
+    "animeType": "OVA",
+    "tvdb_id": "115431",
+    "imdb_id": "tt0362344",
+    "title": "Silver Fang"
   },
   "7047": {
     "imdb_id": "tt1216222",
@@ -21898,6 +21915,13 @@
     "fromSeason": 2,
     "fromEpisode": 1
   },
+  "42513": {
+    "malId": "60579",
+    "malTitle": "Jian Wang 3: Shen Jianxin de 365 Tian",
+    "kitsuId": "42513",
+    "kitsuTitle": "Jian Wang 3: Xia Gan Yi Dan Shen Jianxin",
+    "animeType": "ONA"
+  },
   "42521": {
     "imdb_id": "tt9225320",
     "title": "Radiant",
@@ -23242,6 +23266,18 @@
   "43273": {
     "imdb_id": "tt12642654",
     "title": "By the Grace of the Gods",
+    "fromSeason": 1,
+    "fromEpisode": 1
+  },
+  "43274": {
+    "malId": "63062",
+    "malTitle": "Xian Jian Qi Xia Chuan San",
+    "kitsuId": "43274",
+    "kitsuTitle": "Fanren Xiu Xian Chuan",
+    "animeType": "ONA",
+    "tvdb_id": "166201",
+    "imdb_id": "tt3914484",
+    "title": "Xian jian qi xia zhuan",
     "fromSeason": 1,
     "fromEpisode": 1
   },
@@ -26848,6 +26884,17 @@
     "fromSeason": 2,
     "fromEpisode": 1
   },
+  "45958": {
+    "malId": "61640",
+    "malTitle": "Zi Jin: Yu Miao Fang",
+    "kitsuId": "45958",
+    "kitsuTitle": "Zi Chuan: Yincang Hudong Ju",
+    "animeType": "ONA",
+    "tvdb_id": false,
+    "imdb_id": "nm5779168",
+    "fromSeason": 1,
+    "fromEpisode": 1
+  },
   "45961": {
     "imdb_id": "tt18566706",
     "title": "Futoku no Guild",
@@ -27015,6 +27062,18 @@
   "46016": {
     "imdb_id": "tt19223420",
     "title": "Isekai Nonbiri Nouka",
+    "fromSeason": 1,
+    "fromEpisode": 1
+  },
+  "46022": {
+    "malId": "63000",
+    "malTitle": "Sanxian Lun Hui",
+    "kitsuId": "46022",
+    "kitsuTitle": "Wu Ying Sanqian Dao",
+    "animeType": "ONA",
+    "tvdb_id": false,
+    "imdb_id": "tt28282465",
+    "title": "San xian lun hui",
     "fromSeason": 1,
     "fromEpisode": 1
   },
@@ -28445,6 +28504,18 @@
     "fromSeason": 2,
     "fromEpisode": 1
   },
+  "46916": {
+    "malId": "62703",
+    "malTitle": "Bai Lian Cheng Shen 3",
+    "kitsuId": "46916",
+    "kitsuTitle": "Bai Lian Cheng Shen",
+    "animeType": "ONA",
+    "tvdb_id": "426652",
+    "imdb_id": "tt27818507",
+    "title": "Bai Lian Cheng Shen",
+    "fromSeason": 1,
+    "fromEpisode": 1
+  },
   "46919": {
     "imdb_id": "tt11503082",
     "title": "Scissor Seven",
@@ -28689,6 +28760,18 @@
     "title": "Attack on Titan",
     "fromSeason": 4,
     "fromEpisode": 30
+  },
+  "47151": {
+    "malId": "54437",
+    "malTitle": "Lian Qi Shi Wan Nian",
+    "kitsuId": 47151,
+    "kitsuTitle": "Lian Qi Shi Wan Nian",
+    "animeType": "ONA",
+    "tvdb_id": "431294",
+    "imdb_id": "tt28210907",
+    "title": "One Hundred Thousand Years of Qi Refining",
+    "fromSeason": 1,
+    "fromEpisode": 1
   },
   "47152": {
     "imdb_id": "tt29908328",
@@ -29770,6 +29853,18 @@
     "fromSeason": 1,
     "fromEpisode": 1
   },
+  "48132": {
+    "malId": "61565",
+    "malTitle": "Aoshi Dan Shen",
+    "kitsuId": "48132",
+    "kitsuTitle": "Aoshi Jiuchong Tian",
+    "animeType": "ONA",
+    "tvdb_id": "471165",
+    "imdb_id": "tt33502246",
+    "title": "Ao Shi Dan Shen",
+    "fromSeason": 1,
+    "fromEpisode": 1
+  },
   "48133": {
     "imdb_id": "tt14976292",
     "title": "Link Click",
@@ -29930,6 +30025,18 @@
   "48257": {
     "imdb_id": "tt30644058",
     "title": "Meitou Isekai no Yu Kaitakuki: Around 40 Onsen Mania no Tensei Saki wa, Nonbiri Onsen Tengoku deshita",
+    "fromSeason": 1,
+    "fromEpisode": 1
+  },
+  "48266": {
+    "malId": "63020",
+    "malTitle": "Quanneng Gaoshou",
+    "kitsuId": "48266",
+    "kitsuTitle": "Wanneng Lian Ai Zahuo Dian",
+    "animeType": "ONA",
+    "tvdb_id": false,
+    "imdb_id": "tt32553250",
+    "title": "Jipin Quanneng Gaoshou",
     "fromSeason": 1,
     "fromEpisode": 1
   },
@@ -32406,6 +32513,18 @@
     "malTitle": "Seihou Shouka Saint Lime",
     "kitsuId": "50234"
   },
+  "50238": {
+    "malId": "61921",
+    "malTitle": "Shen Mu: Nian Fan",
+    "kitsuId": "50238",
+    "kitsuTitle": "Shen Mu 3rd Season",
+    "animeType": "ONA",
+    "tvdb_id": "436775",
+    "imdb_id": "tt29045244",
+    "title": "Shi Fang Jian Sheng",
+    "fromSeason": 1,
+    "fromEpisode": 1
+  },
   "50239": {
     "malId": "62653",
     "malTitle": "One Punch Man 2nd Season: Ichigeki de Wakaru! Maji Furikaeri!",
@@ -32579,6 +32698,46 @@
     "title": "2025 Pokémon World Championships",
     "fromSeason": 1,
     "fromEpisode": 1
+  },
+  "50357": {
+    "malId": "54160",
+    "malTitle": "Future Kid Takara",
+    "kitsuId": "50357",
+    "kitsuTitle": "Future Kid Takara",
+    "animeType": "TV",
+    "tvdb_id": false,
+    "imdb_id": "tt38046507",
+    "title": "Future Kid Takara",
+    "fromSeason": 1,
+    "fromEpisode": 1
+  },
+  "50358": {
+    "malId": "62268",
+    "malTitle": "Chikyuu no Latair",
+    "kitsuId": "50358",
+    "kitsuTitle": "Chikyuu no Latair",
+    "animeType": "TV"
+  },
+  "50370": {
+    "malId": "62654",
+    "malTitle": "Princess Catch! Tiniping",
+    "kitsuId": "50370",
+    "kitsuTitle": "Princess Catch! Tiniping",
+    "animeType": "TV"
+  },
+  "50372": {
+    "malId": "62969",
+    "malTitle": "One Piece: Dr. Chopper no Bouken Karte - Tensai ga Nokoshita \"Last Records\"",
+    "kitsuId": "50372",
+    "kitsuTitle": "One Piece: Dr. Chopper no Bouken Karte - Tensai ga Nokoshita \"Last Records\"",
+    "animeType": "special"
+  },
+  "50382": {
+    "malId": "62831",
+    "malTitle": "\"Odekake Kozame\" Kurashiki-shi Collaboration Movie",
+    "kitsuId": "50382",
+    "kitsuTitle": "Odekake Kozame Movie: Tokai no Otomodachi x Yoru wa Neko to Issho Manner Eizou",
+    "animeType": "movie"
   },
   "7818 ": {
     "imdb_id": "tt2360110",
